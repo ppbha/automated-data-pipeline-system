@@ -2,6 +2,7 @@ package com.pipeline.datapipelinesystem.controller;
 
 import com.pipeline.datapipelinesystem.dto.CustomerRecord;
 import com.pipeline.datapipelinesystem.dto.ValidationResult;
+import com.pipeline.datapipelinesystem.service.DBLoaderService;
 import com.pipeline.datapipelinesystem.service.FileReaderService;
 import com.pipeline.datapipelinesystem.service.ValidationService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +16,12 @@ public class FileTestController {
 
     private final FileReaderService fileReaderService;
     private final ValidationService validationService;
+    private final DBLoaderService dbLoaderService;
 
-    public FileTestController(FileReaderService fileReaderService,ValidationService validationService){
+    public FileTestController(FileReaderService fileReaderService,ValidationService validationService,DBLoaderService dbLoaderService){
         this.fileReaderService = fileReaderService;
         this.validationService = validationService;
+        this.dbLoaderService = dbLoaderService;
     }
 
     @GetMapping("/read-file")
@@ -27,9 +30,11 @@ public class FileTestController {
     }
 
     @GetMapping("/process-file")
-    public ValidationResult processFile(){
+    public String processFile(){
         List<CustomerRecord> records = fileReaderService.readFile("input/customer-data.csv");
-        return validationService.validate(records);
+        ValidationResult result = validationService.validate(records);
+        dbLoaderService.loadToDatabase(result);
+        return "File processed and stored in Database Successfully!";
     }
 
 
