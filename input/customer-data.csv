@@ -2,3 +2,5 @@ customer_id,name,amount
 101,John,500
 102,Alice,300
 103,Bob,700
+104,bree,-100
+105,,200
