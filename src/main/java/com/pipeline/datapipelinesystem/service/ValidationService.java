@@ -2,6 +2,7 @@ package com.pipeline.datapipelinesystem.service;
 
 import com.pipeline.datapipelinesystem.dto.CustomerRecord;
 import com.pipeline.datapipelinesystem.dto.ValidationResult;
+import com.pipeline.datapipelinesystem.exception.PipelineException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ public class ValidationService {
     }
     private boolean isValid(CustomerRecord record){
         if(record.getCustomerId() == null)
-            return false;
+            throw new PipelineException("customer ID is missing");
         if(record.getName() == null || record.getName().isEmpty())
-            return false;
+            throw new PipelineException("Customer Name is missing");
         if(record.getAmount() == null || record.getAmount() <= 0)
-            return false;
+            throw new PipelineException("Amount is missing");
 
         return true;
     }

@@ -4,6 +4,7 @@ import com.pipeline.datapipelinesystem.dto.CustomerRecord;
 import com.pipeline.datapipelinesystem.dto.ValidationResult;
 import com.pipeline.datapipelinesystem.entity.ErrorRecord;
 import com.pipeline.datapipelinesystem.entity.ProcessedRecord;
+import com.pipeline.datapipelinesystem.exception.PipelineException;
 import com.pipeline.datapipelinesystem.repository.ErrorRecordRepository;
 import com.pipeline.datapipelinesystem.repository.ProcessedrecordRepository;
 import org.springframework.stereotype.Service;
@@ -20,25 +21,29 @@ public class DBLoaderService {
     }
 
     public void loadToDatabase(ValidationResult result){
-        //to save valid records
-        for(CustomerRecord record : result.getValidRecords()){
-            ProcessedRecord processedRecord = new ProcessedRecord();
-            processedRecord.setCustomerId(record.getCustomerId());
-            processedRecord.setName(record.getName());
-            processedRecord.setAmount(record.getAmount());
+        try {
+            //to save valid records
+            for (CustomerRecord record : result.getValidRecords()) {
+                ProcessedRecord processedRecord = new ProcessedRecord();
+                processedRecord.setCustomerId(record.getCustomerId());
+                processedRecord.setName(record.getName());
+                processedRecord.setAmount(record.getAmount());
 
-            processedrecordRepository.save(processedRecord);
-        }
+                processedrecordRepository.save(processedRecord);
+            }
 
-        //to save Invalid records
-        for(CustomerRecord record : result.getInvalidRecords()){
-            ErrorRecord errorRecord = new ErrorRecord();
-            errorRecord.setCustomerId(record.getCustomerId());
-            errorRecord.setName(record.getName());
-            errorRecord.setAmount(record.getAmount());
-            errorRecord.setErrorMessage("Invalid data");
+            //to save Invalid records
+            for (CustomerRecord record : result.getInvalidRecords()) {
+                ErrorRecord errorRecord = new ErrorRecord();
+                errorRecord.setCustomerId(record.getCustomerId());
+                errorRecord.setName(record.getName());
+                errorRecord.setAmount(record.getAmount());
+                errorRecord.setErrorMessage("Invalid data");
 
-            errorRecordRepository.save(errorRecord);
+                errorRecordRepository.save(errorRecord);
+            }
+        } catch (Exception e) {
+            throw new PipelineException("Error saving to database",e);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.pipeline.datapipelinesystem.service;
 
 
 import com.pipeline.datapipelinesystem.dto.CustomerRecord;
+import com.pipeline.datapipelinesystem.exception.PipelineException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -37,7 +38,7 @@ public class FileReaderService {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PipelineException("Error reading file",e);
         }
         return records;
     }

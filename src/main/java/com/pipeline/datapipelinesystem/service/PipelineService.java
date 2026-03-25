@@ -2,6 +2,7 @@ package com.pipeline.datapipelinesystem.service;
 
 import com.pipeline.datapipelinesystem.dto.CustomerRecord;
 import com.pipeline.datapipelinesystem.dto.ValidationResult;
+import com.pipeline.datapipelinesystem.exception.PipelineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,7 @@ public class PipelineService {
     public void processFile(String filepath){
         File file  = new File(filepath);
         if(!file.exists()){
-            log.info("No file found.");
-            return;
+            throw new PipelineException("File Not found" + filepath);
         }
         try {
             log.info("reading file...");
